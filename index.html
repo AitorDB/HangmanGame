@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hangman game</title>
+
+    <link rel="stylesheet" href="./src/css/style.css">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.4/vue.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <div v-if="loaded">
+            <div v-if="healthPoints > 0 && !resolved">
+                <h1 id="healthPoints">{{healthPoints}}/5</h1>
+                <div id="mainContainer">
+                    <hangman-word :show="usedChars" :word="word"></hangman-word>
+                    <keyboard :value="usedChars" @input="updateUsedChars"></keyboard>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" v-else></div>
+
+        <div class="alert" v-if="alert">
+            <p v-if="loadError">Something was wrong while loading</p>
+            <p v-else-if="resolved">You win!</p>
+            <p v-else>You lose, the word was "{{word}}"</p>                
+            <button @click="retry">Play again?</button>
+        </div>
+    </div>
+
+    <template id="hangmanWord">
+        <div class="container">
+            <table>
+                <tr>
+                    <td v-for="char in word" v-if="show.includes(char)">{{char}}</td>
+                    <td v-else>_</td>
+                </tr>
+            </table>
+        </div>
+    </template>
+    <template id="keyboard">
+        <div id="keyboardContainer" class="container">
+            <div 
+                v-for="char in chars" 
+                @click="updateChars(char)"
+                :class="'keyButton ' + (value.includes(char) ? 'red' : 'green')">{{char}}</div>
+        </div>
+    </template>
+    <script src="./src/js/index.js"></script>
+</body>
+
+</html>
